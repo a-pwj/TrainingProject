@@ -1,0 +1,113 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'java'
+    id 'kotlin'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+dependencies {
+    implementation gradleApi()   //必须
+//    implementation localGroovy()    //必须
+
+    //如果要使用android的API，需要引用这个，实现Transform的时候会用到
+    implementation 'com.android.tools.build:gradle:7.0.2', {
+        exclude group: 'org.ow2.asm'
+    }
+    implementation 'org.ow2.asm:asm:7.2'
+    implementation 'org.ow2.asm:asm-commons:7.2'
+    implementation 'org.ow2.asm:asm-analysis:7.2'
+    implementation 'org.ow2.asm:asm-util:7.2'
+    implementation 'org.ow2.asm:asm-tree:7.2'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+/************************配置上传到本地仓库 start**************************/
+group "com.training.plugin"
+version "1.0.0"
+
+/***************自定义增加额外的产出 start******************/
+/**
+ * 源代码打包任务（名为 training-1.0-source.jar）
+ */
+task sourcesJar(type: Jar) {
+    baseName "training"
+    //分类器，用于区别其他jar包
+    classifier "sources"
+    //从main源集中的所有代码
+    from sourceSets.main.allSource
+}
+
+/**
+ * 把自动生成的DOc打包成Jar包（名为 training-1.0-doc.jar）,
+ * 这个docJar 依赖于系统的两个任务，因为只有这两个任务生成doc之后才能把它们的产出打包到一起
+ */
+task docJar(type: Jar, dependsOn: [javadoc, groovydoc]) {
+    baseName "training"
+    classifier "doc"
+    //从系统javadoc和groovydoc的Doc产出
+    from javadoc.destinationDir, groovydoc.destinationDir
+}
+
+/**
+ * 解决javadoc打包乱码
+ */
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        title "plugin"
+    }
+}
+
+/**
+ * 配置工程工件 即jar产出的配置，默认有java jar包，没有sourcesJar和docJar
+ */
+artifacts {
+    archives sourcesJar
+//    archives docJar
+}
+
+/*****************自定义增加额外的产出 end****************/
+publishing {
+    publications {
+        //其中plugin为任意名称，components.java表示打包编译后的产物即jar包
+        plugin(MavenPublication) {
+            from components.java
+            //不指定的话默认为项目名
+            group "com.training.plugin"
+            artifactId 'training'
+            version "1.0.0"
+            /*********************把sourcesJar、docJar添加到上传内容****************************/
+            artifact sourcesJar
+//            artifact docJar
+            /*********配置pom的内容,pom本身就是以xml数据格式的结构组织的**************/
+            pom.withXml() {
+                //拿到pom文件的根节点
+                def root = asNode()
+                //把license节点添加到root节点下的licenses节点
+                def licenseNode = root.appendNode("licenses").appendNode('license')
+                licenseNode.appendNode("name", "Apache License,Version 2.0")
+                licenseNode.appendNode("url", "https://www.apache.org/license/LICENSE-2.0.txt")
+                licenseNode.appendNode("distribution", "repo")
+                licenseNode.appendNode("comments", "A business-friendly OSS license ")
+            }
+        }
+    }
+    repositories {
+//        maven {
+//            def releasesRepoUrl = "$buildDir/repos/releases"
+//            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+//            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//        }
+        mavenLocal()
+    }
+}
+
+/************************配置上传到本地仓库 end**************************/

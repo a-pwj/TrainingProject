@@ -1,0 +1,52 @@
+<resources>
+
+    <!--    splash screen 启动页配置-->
+    <style name="JetpackSplashTheme" parent="JetpackSplashTheme.Base" />
+
+    <style name="JetpackSplashTheme.Base" parent="Theme.SplashScreen">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/newSplashScreenColor</item>
+
+        <!-- animated icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_kotlin_hero_new_animated_total</item>
+        <!-- animation duration-->
+        <item name="windowSplashScreenAnimationDuration">@integer/icon_animator_duration</item>
+        <!-- screen background color -->
+        <item name="windowSplashScreenBackground">@color/newSplashScreenColor</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.TrainingProject</item>
+    </style>
+
+
+    <!--底部弹出框样式(背景变暗)-->
+    <style name="BottomDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@style/BottomDialog.AnimationStyle</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+    <!--底部弹出框样式(背景变暗)-->
+    <style name="BottomDialogNoAnim" parent="@android:style/Theme.Dialog">
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
+    <!--底部弹出框的动画样式-->
+    <style name="BottomDialog.AnimationStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
+    </style>
+    <!--底部弹出框的动画样式-->
+    <style name="BottomDialog.AnimationStyle2" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_welcome_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_welcome_exit</item>
+    </style>
+
+
+</resources>
